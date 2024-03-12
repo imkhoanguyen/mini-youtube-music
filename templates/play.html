@@ -12,20 +12,21 @@
     />
   </head>
   <body>
-    <main class="container mt-5">
-      <div class="container-fluid">
-        <div class="thumbnail">
-            <img src="{{ audio_thumb }}" alt="Lights" style="width:100%">
-            <div class="caption">
-              <p>{{ audio_title }}</p>
-            </div>
-        </div>
+    <div style="width: 20%; margin: 0 auto; margin-top: 100px;">
+      <div class="thumbnail">
+          <img src="{{ audio_thumb }}">
+          <div class="caption">
+            <p>{{ audio_title }}</p>
+          </div>
       </div>
+    </div>
+    
+    <div class="d-flex justify-content-center">
       <audio controls autoplay>
         <source src="{{ audio_url }}" type="audio/mp3">
         Your browser does not support the audio element.
       </audio>
-    </main>
+    </div>
     <script
       src="https://code.jquery.com/jquery-3.7.1.min.js"
       integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
