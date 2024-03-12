@@ -15,7 +15,7 @@
     <header>
       <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">Navbar</a>
+          <a class="navbar-brand" href="#">YOURTUBE</a>
           <button
             class="navbar-toggler"
             type="button"
@@ -30,16 +30,7 @@
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Features</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Pricing</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+                <a class="nav-link active" aria-current="page" href="#">Introduce</a>
               </li>
             </ul>
           </div>
@@ -48,6 +39,7 @@
     </header>
     <main class="container mt-5">
       <h1 class="text-center mb-4">YouTube Music Search</h1>
+      <div id="play_bar" class="fixed d-flex justify-content-center"></div>
       <form action="/search" method="post">
         <div class="row">
           <div class="col-11">
@@ -66,13 +58,17 @@
       <article class="mt-5">
         <div class="row row-cols-3">
             {% for video in videos %}
-            <div class="col mb-4">
+            <form action="/play" method="post" id="play">
+              <div class="col mb-4" onclick="showAudio('{{ video.video_id }}', '{{ video.title }}', '{{ video.thumbnail }}')">
                 <div class="mb-2">
                     <img src="{{ video.thumbnail }}" width="100%" alt="Thumbnail" class="rounded-3">
                 </div>
-                <a href="https://www.youtube.com/watch?v={{ video.video_id }}">{{ video.title }}</a>
-                <iframe id="song" src="https://www.youtube.com/embed/{{ video.video_id }}" width="100%" frameborder="0" allowfullscreen playsinline allow="autoplay; encrypted-media"></iframe>
+                <input type="hidden" name="video_url" id="inputHidden1">
+                <input type="hidden" name="video_title" id="inputHidden2">
+                <input type="hidden" name="video_thumb" id="inputHidden3">
+                <p>{{ video.title }}</p>
             </div>
+            </form>
         {% endfor %}
         </div>
       </article>
@@ -88,4 +84,18 @@
       crossorigin="anonymous"
     ></script>
   </body>
+  <script>
+    function showAudio(id, name, img) {
+      var input1 = document.getElementById('inputHidden1');
+      input1.value = `https://www.youtube.com/watch?v=${id}`;
+
+      var input2 = document.getElementById('inputHidden2');
+      input2.value = name;
+
+      var input3 = document.getElementById('inputHidden3');
+      input3.value = img;
+      
+      document.getElementById('play').submit();
+    }
+  </script>
 </html>

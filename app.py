@@ -1,10 +1,15 @@
 from flask import Flask, render_template, request
 from googleapiclient.discovery import build
+from pytube import YouTube
+import pafy
+import vlc
+from flask import Flask, render_template, request, Response
+
 
 app = Flask(__name__)
 
 # Thay đổi 'YOUR_API_KEY' bằng API key của bạn
-API_KEY = 'AIzaSyCUDaCZJRNk9MeQh3XEOW2iP-QlS-Ku6vk'
+API_KEY = 'AIzaSyDdyejQ0N6LkJ0YIFpBmpzQXwV7x1HYlAw'
 
 # Khởi tạo YouTube API
 youtube = build('youtube', 'v3', developerKey=API_KEY)
@@ -43,6 +48,28 @@ def search():
                 'channel_title': video_info['channelTitle']
             })
         return render_template('index.html', videos=videos)
+    
+@app.route('/play', methods=['POST'])
+def play():
+    video_url = request.form['video_url']
+    audio_title = request.form['video_title']
+    audio_thumb = request.form['video_thumb']
+    video = YouTube(video_url)
+    best_audio = video.streams.filter(only_audio=True).first()
+    audio_url = best_audio.url
+    return render_template('play.html', audio_url=audio_url, audio_title=audio_title, audio_thumb=audio_thumb)
+
+@app.route('/stream_audio')
+def stream_audio():
+    audio_url = request.args.get('audio_url', '')
+    audio_title = request.args.get('audio_title', '')
+    audio_thumb = request.args.get('audio_thumb', '')
+    instance = vlc.Instance('--input-repeat=-1', '--fullscreen')
+    player = instance.media_player_new()
+    media = instance.media_new(audio_url)
+    player.set_media(media)
+    player.play()
+    return Response(status=200)
 
 if __name__ == '__main__':
     app.run(debug=True)
