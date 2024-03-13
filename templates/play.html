@@ -11,22 +11,89 @@
       crossorigin="anonymous"
     />
   </head>
-  <body>
-    <div style="width: 20%; margin: 0 auto; margin-top: 100px;">
-      <div class="thumbnail">
-          <img src="{{ audio_thumb }}">
-          <div class="caption">
-            <p>{{ audio_title }}</p>
-          </div>
+
+  <header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">YOURTUBE</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Introduce</a>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
+    </nav>
+  </header>
+
+  <body>
+    <main class="container mt-5">
+
+      <h1 class="text-center mb-4">YouTube Music Search</h1>
+      <div id="play_bar" class="fixed d-flex justify-content-center"></div>
+      <form action="/search" method="post">
+        <div class="row">
+          <div class="col-11">
+            <input
+              class="form-control"
+              type="text"
+              name="query"
+              placeholder="Enter search..."
+            />
+          </div>
+          <div class="col-1">
+            <button class="btn btn-primary" type="submit">Search</button>
+          </div>
+        </div>
+      </form>
+
+      <div style="width: 20%; margin: 0 auto; margin-top: 50px;">
+        <div class="thumbnail">
+            <img src="{{ audio_thumb }}">
+            <div class="caption">
+              <p>{{ audio_title }}</p>
+            </div>
+        </div>
+      </div>
+      
+      <div class="d-flex justify-content-center">
+        <audio controls autoplay loop>
+          <source src="{{ audio_url }}" type="audio/mp3">
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+      <article class="mt-5">
+        <div class="row row-cols-3">
+            {% for video in videos %}
+            <form action="/play" method="post" id="play">
+              <div class="col mb-4" onclick="showAudio('{{ video.video_id }}', '{{ video.title }}', '{{ video.thumbnail }}', '{{ video.channel_title }}')">
+                <div class="mb-2">
+                    <img src="{{ video.thumbnail }}" alt="Thumbnail" class="rounded-3">
+                </div>
+                <p>{{ video.title }}</p>
+                <input type="hidden" name="video_url" id="inputHidden1">
+                <input type="hidden" name="video_title" id="inputHidden2">
+                <input type="hidden" name="video_thumb" id="inputHidden3">
+                <input type="hidden" name="video_channel" id="inputHidden4">
+            </div>
+            </form>
+        {% endfor %}
+        </div>
+      </article>
+    </main>
     
-    <div class="d-flex justify-content-center">
-      <audio controls autoplay>
-        <source src="{{ audio_url }}" type="audio/mp3">
-        Your browser does not support the audio element.
-      </audio>
-    </div>
     <script
       src="https://code.jquery.com/jquery-3.7.1.min.js"
       integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
@@ -38,4 +105,21 @@
       crossorigin="anonymous"
     ></script>
   </body>
+  <script>
+    function showAudio(id, name, img, channel) {
+      var input1 = document.getElementById('inputHidden1');
+      input1.value = `https://www.youtube.com/watch?v=${id}`;
+
+      var input2 = document.getElementById('inputHidden2');
+      input2.value = name;
+
+      var input3 = document.getElementById('inputHidden3');
+      input3.value = img;
+
+      var input4 = document.getElementById('inputHidden4');
+      input4.value = channel;
+      
+      document.getElementById('play').submit();
+    }
+  </script>
 </html>

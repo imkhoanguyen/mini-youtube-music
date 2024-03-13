@@ -47,7 +47,7 @@
               class="form-control"
               type="text"
               name="query"
-              placeholder="Enter search query..."
+              placeholder="Enter search..."
             />
           </div>
           <div class="col-1">
@@ -59,13 +59,14 @@
         <div class="row row-cols-3">
             {% for video in videos %}
             <form action="/play" method="post" id="play">
-              <div class="col mb-4" onclick="showAudio('{{ video.video_id }}', '{{ video.title }}', '{{ video.thumbnail }}')">
+              <div class="col mb-4" onclick="showAudio('{{ video.video_id }}', '{{ video.title }}', '{{ video.thumbnail }}', '{{ video.channel_title }}')">
                 <div class="mb-2">
                     <img src="{{ video.thumbnail }}" width="100%" alt="Thumbnail" class="rounded-3">
                 </div>
                 <input type="hidden" name="video_url" id="inputHidden1">
                 <input type="hidden" name="video_title" id="inputHidden2">
                 <input type="hidden" name="video_thumb" id="inputHidden3">
+                <input type="hidden" name="video_channel" id="inputHidden4">
                 <p>{{ video.title }}</p>
             </div>
             </form>
@@ -85,7 +86,7 @@
     ></script>
   </body>
   <script>
-    function showAudio(id, name, img) {
+    function showAudio(id, name, img, channel) {
       var input1 = document.getElementById('inputHidden1');
       input1.value = `https://www.youtube.com/watch?v=${id}`;
 
@@ -94,6 +95,9 @@
 
       var input3 = document.getElementById('inputHidden3');
       input3.value = img;
+
+      var input4 = document.getElementById('inputHidden4');
+      input4.value = channel;
       
       document.getElementById('play').submit();
     }
