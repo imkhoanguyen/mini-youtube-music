@@ -1,0 +1,78 @@
+svg, .timeline {
+    cursor: pointer; 
+ }
+
+.music-player {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    padding: 16px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff; /* Đặt màu nền cho phần .music-player */
+    border-top: 1px solid #ddd; /* Thêm đường viền phân tách */
+}
+
+
+.music-player__info {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.img-container {
+    max-width: 55px;
+    min-width: 55px;
+    overflow: hidden;
+}
+
+.img-container img {
+    width: 55px;
+    height: 55px;
+}
+
+.info-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.music-player__controller{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.control-btn{
+    display: flex;
+    align-items: center;
+    gap: 2em;
+    padding-top: 10px;
+}
+
+.progress-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 1em;
+    
+}
+
+.progress-bar{
+    width: 100%;
+    height: 4px;
+    border-radius: 10px;
+    background-color: #ccc4;
+}
+
+.music-player__other {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 8px;
+    gap: 16px;
+}
