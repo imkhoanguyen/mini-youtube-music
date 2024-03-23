@@ -162,20 +162,22 @@
           </svg>
         </div>
         <div class="progress-container">
-          <span>0:49</span>
+          <span id="current-time">0:00</span>
           <div class="progress-bar">
             <input
               type="range"
               class="timeline"
               max="100"
               value="0"
+              step="0.1"
               class="timeline"
             />
           </div>
-          <span>3:15</span>
+          <div class="progress-button"></div>
+          <span id="total-time">0:00</span>
         </div>
       </div>
-      <div class="music-player__other">
+      <div class="music-player__other" id="volume-control">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -194,6 +196,16 @@
             d="M8.707 11.182A4.5 4.5 0 0 0 10.025 8a4.5 4.5 0 0 0-1.318-3.182L8 5.525A3.5 3.5 0 0 1 9.025 8 3.5 3.5 0 0 1 8 10.475zM6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06"
           />
         </svg>
+        <div class="volume-slider">
+          <input
+            type="range"
+            class="volume-range"
+            min="0"
+            max="1"
+            step="0.1"
+            value="1"
+          />
+        </div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -227,7 +239,11 @@
     ></script>
     <script>
       const timeline = document.querySelector(".timeline");
+      const currentTimeSpan = document.getElementById("current-time");
+      const totalTimeSpan = document.getElementById("total-time");
       const audio = document.querySelector("audio");
+      const volumeControl = document.getElementById("volume-control");
+      const volumeRange = document.querySelector(".volume-range");
       function playSong(songId, audioUrl, thumbnail, title, artist) {
         document.getElementById("audio_player").src = audioUrl;
         document.getElementById("audio_player").play();
@@ -237,18 +253,43 @@
         document.getElementById("song-img").alt = title;
       }
 
-      function changeTimelinePosition() {
-        const percentagePosition = (100 * audio.currentTime) / audio.duration;
-        timeline.style.backgroundSize = `${percentagePosition}% 100%`;
-        timeline.value = percentagePosition;
-      }
-
       function changeSeek() {
         const time = (timeline.value * audio.duration) / 100;
         audio.currentTime = time;
       }
-      audio.ontimeupdate = changeTimelinePosition;
       timeline.addEventListener("change", changeSeek);
+
+      // Cập nhật thời gian hiện tại và tổng thời lượng của audio
+      audio.addEventListener("timeupdate", () => {
+        const currentTime = formatTime(audio.currentTime);
+        const totalTime = formatTime(audio.duration);
+        currentTimeSpan.textContent = currentTime;
+        totalTimeSpan.textContent = totalTime;
+
+        // Cập nhật giá trị của thanh trượt
+        const progress = (audio.currentTime / audio.duration) * 100;
+        console.log(progress);
+        timeline.value = progress;
+      });
+
+      // Hàm chuyển đổi giây thành định dạng mm:ss
+      function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = Math.floor(seconds % 60);
+        return `${minutes}:${
+          remainingSeconds < 10 ? "0" : ""
+        }${remainingSeconds}`;
+      }
+
+      volumeRange.addEventListener("input", () => {
+        audio.volume = volumeRange.value;
+      });
+
+            // Cập nhật thanh trượt mỗi giây
+      // setInterval(() => {
+      //   const progress = (audio.currentTime / audio.duration) * 100;
+      //   timeline.value = progress;
+      // }, 500);
     </script>
   </body>
 </html>

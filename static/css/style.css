@@ -62,12 +62,13 @@ svg, .timeline {
     
 }
 
-.progress-bar{
+
+
+.progress-bar {
+    display: inline-block;
     width: 100%;
-    height: 4px;
-    border-radius: 10px;
-    background-color: #ccc4;
 }
+
 
 .music-player__other {
     display: flex;
@@ -75,4 +76,17 @@ svg, .timeline {
     align-items: center;
     padding-right: 8px;
     gap: 16px;
+}
+
+.volume-slider {
+    display: block; 
+    
+}
+
+.volume-range, .timeline {
+    width: 100%;
+    height: 4px; /* Chiều cao cho .progress-bar */
+    background-color: #ccc;
+    border-radius: 10px;
+    margin-bottom: 14px;
 }

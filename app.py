@@ -45,7 +45,7 @@ def search():
             q=request.form['query'],
             part='snippet',
             type='video',
-            videoCategoryId='10',  
+            # videoCategoryId='10',  
             maxResults=3
         ).execute()
 
