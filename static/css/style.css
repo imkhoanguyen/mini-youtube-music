@@ -90,3 +90,10 @@ svg, .timeline {
     border-radius: 10px;
     margin-bottom: 14px;
 }
+
+.play-btn {
+    border: none;
+    outline: none;
+    background: none;
+    transition: none;
+  }
