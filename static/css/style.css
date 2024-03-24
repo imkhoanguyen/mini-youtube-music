@@ -1,4 +1,18 @@
-svg, .timeline {
+.song-container img {
+    transition: transform 0.75s; 
+    object-fit: cover;
+    overflow: hidden;
+}
+
+.song-container {
+    overflow: hidden;
+}
+
+.song-container:hover img {
+    transform: scale(1.08); 
+}
+
+svg, .timeline, .song-container img,.volume-range{
     cursor: pointer; 
  }
 
@@ -30,6 +44,7 @@ svg, .timeline {
 .img-container img {
     width: 55px;
     height: 55px;
+    object-fit: cover;
 }
 
 .info-container {
@@ -80,7 +95,7 @@ svg, .timeline {
 
 .volume-slider {
     display: block; 
-    
+    margin-left: -13px;
 }
 
 .volume-range, .timeline {
