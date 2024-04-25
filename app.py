@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 from googleapiclient.discovery import build
 from pytube import YouTube
 import json
-
+from concurrent.futures import ThreadPoolExecutor
 app = Flask(__name__)
 
 # Thay đổi 'YOUR_API_KEY' bằng API key của bạn
@@ -20,19 +20,23 @@ class Song:
         self.songUrl = songUrl
         self.audioUrl = audioUrl
 
-def getInfoSong(id):
+def getInfoSong(id, audio_url):
     request = youtube.videos().list(part='snippet', id=id).execute()
     songResponse = request['items'][0]['snippet']
     thumbnail_url = songResponse['thumbnails']['medium']['url']
     songUrl = f'https://www.youtube.com/watch?v={id}'
-
-    video = YouTube(songUrl)
-    bestAudio = video.streams.filter(only_audio=True).first()
-    audioUrl = bestAudio.url
-
-    songInfo = Song(id, songResponse['title'], songResponse['channelTitle'], thumbnail_url, songUrl, audioUrl)
+    songInfo = Song(id, songResponse['title'], songResponse['channelTitle'], thumbnail_url, songUrl, audio_url)
     return songInfo
 
+def getAudioUrl(video_id):
+    try:
+        video = YouTube(f'https://www.youtube.com/watch?v={video_id}')
+        best_audio = video.streams.filter(only_audio=True).first()
+        audio_url = best_audio.url
+        return audio_url
+    except Exception as e:
+        print(f"Error fetching audio URL for video {video_id}: {e}")
+        return None
 
 @app.route('/')
 def index():
@@ -46,20 +50,24 @@ def search():
             part='snippet',
             type='video',
             videoCategoryId='10',  
-            maxResults=12
+            maxResults=9
         ).execute()
 
         songs = []
-       
+        videoIds = []
         for search_result in search_response.get('items', []):
-            video_id = search_result['id']['videoId']
-            song = getInfoSong(video_id)
+            videoId = search_result['id']['videoId'] 
+            videoIds.append(videoId)
+
+        with ThreadPoolExecutor() as executor:
+            audioUrl = executor.map(getAudioUrl, videoIds)
+
+        for video_id, audio_url in zip(videoIds, audioUrl):
+            song = getInfoSong(video_id, audio_url)
             songs.append(song)
 
-        # Convert the songs array to a JSON string
         songs_json = json.dumps([song.__dict__ for song in songs])
         return render_template('index.html', songs=songs_json)
-
 
 if __name__ == '__main__':
     app.run(debug=True)
