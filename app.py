@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 from googleapiclient.discovery import build
 from pytube import YouTube
-
+import json
 
 app = Flask(__name__)
 
@@ -46,7 +46,7 @@ def search():
             part='snippet',
             type='video',
             videoCategoryId='10',  
-            maxResults=3
+            maxResults=12
         ).execute()
 
         songs = []
@@ -55,7 +55,10 @@ def search():
             video_id = search_result['id']['videoId']
             song = getInfoSong(video_id)
             songs.append(song)
-        return render_template('index.html', songs=songs)
+
+        # Convert the songs array to a JSON string
+        songs_json = json.dumps([song.__dict__ for song in songs])
+        return render_template('index.html', songs=songs_json)
 
 
 if __name__ == '__main__':
