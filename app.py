@@ -6,7 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 app = Flask(__name__)
 
 # Thay đổi 'YOUR_API_KEY' bằng API key của bạn
-API_KEY = 'AIzaSyCmhpDQnXw6O8sR1uqcCsq4E94Okntk8ig'
+API_KEY = 'AIzaSyDdyejQ0N6LkJ0YIFpBmpzQXwV7x1HYlAw'
 
 # Khởi tạo YouTube API
 youtube = build('youtube', 'v3', developerKey=API_KEY)
@@ -60,9 +60,9 @@ def search():
             videoIds.append(videoId)
 
         with ThreadPoolExecutor() as executor:
-            audioUrl = executor.map(getAudioUrl, videoIds)
+            audioUrls = executor.map(getAudioUrl, videoIds)
 
-        for video_id, audio_url in zip(videoIds, audioUrl):
+        for video_id, audio_url in zip(videoIds, audioUrls):
             song = getInfoSong(video_id, audio_url)
             songs.append(song)
 
