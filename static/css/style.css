@@ -111,7 +111,8 @@ svg, .timeline, .song-container img,.volume-range{
     margin-bottom: 14px;
 }
 
-.play-btn {
+/* Xoa thuoc tinh mac dinh cua btn */
+.play-btn, #download-btn, .sound-btn {
     border: none;
     outline: none;
     background: none;

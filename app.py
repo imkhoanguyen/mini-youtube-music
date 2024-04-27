@@ -1,10 +1,14 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from googleapiclient.discovery import build
 from pytube import YouTube
 import json
 from concurrent.futures import ThreadPoolExecutor
 
 app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 API_KEYS = ['AIzaSyDdyejQ0N6LkJ0YIFpBmpzQXwV7x1HYlAw',
             'AIzaSyCUDaCZJRNk9MeQh3XEOW2iP-QlS-Ku6vk',
@@ -46,17 +50,16 @@ def getAudioUrl(video_id):
         print(f"Error fetching audio URL for video {video_id}: {e}")
         return None
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
 @app.route('/download', methods=['POST'])
 def download():
     songUrl = request.form['txtSongUrl']
-    yt = YouTube(songUrl)
-    t = yt.streams.filter(only_audio=True)
-    t[0].download()
-    return render_template("index.html")
+    try:
+        yt = YouTube(songUrl)
+        t = yt.streams.filter(only_audio=True)
+        t[0].download()
+        return jsonify({'message': 'Download Audio Success!'})
+    except Exception as e:
+        return jsonify({'error': 'Download Audio Fail!'})
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
