@@ -201,21 +201,26 @@
             value="1"
           />
         </div>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          fill="currentColor"
-          class="bi bi-download"
-          viewBox="0 0 16 16"
-        >
-          <path
-            d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"
-          />
-          <path
-            d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"
-          />
-        </svg>
+        <form action="/download" method="post">
+          <input hidden type="text" name="txtSongUrl" id="txtSongUrl">
+          <button type="button" id="download-btn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="currentColor"
+              class="bi bi-download"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"
+              />
+              <path
+                d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"
+              />
+            </svg>
+        </button>
+    </form>
       </div>
     </div>
     <audio hidden controls autoplay id="audio_player">
@@ -232,6 +237,7 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
       localStorage.setItem('songs', JSON.stringify([]));
       const timeline = document.querySelector(".timeline");
@@ -245,6 +251,23 @@
       const prevButton = document.querySelector(".prev-btn");
       const repeatButton = document.querySelector(".repeat-btn");
       const shuffleButton = document.querySelector(".shuffle-btn");
+
+        // dowload 1 file
+        $(document).ready(function() {
+            $("#download-btn").click(function() {
+              alert("click");
+                const songUrl = $("#txtSongUrl").val(); // Giả sử bạn có một input với id là txtSongUrl để nhập URL bài hát
+                $.ajax({
+                    type: "POST",
+                    url: "/download",
+                    data: { txtSongUrl: songUrl }, // Gửi dữ liệu với key là txtSongUrl
+                    success: function(response) {
+                        console.log(response);
+                    }
+                });
+            });
+        });
+
 
       const shuffle = `<svg
               xmlns="http://www.w3.org/2000/svg"
@@ -349,6 +372,7 @@
         document.getElementById("song-img").src = song.thumbnail;
         document.getElementById("song-img").alt = song.title;
         playButton.innerHTML = pauseIcon;
+        document.getElementById("txtSongUrl").value = song.songUrl;
       }
 
       function nextSong() {
@@ -400,11 +424,13 @@
       volumeRange.addEventListener("input", () => {
         audio.volume = volumeRange.value;
       });
+
+
     </script>
     {% if songs %}
         <script>
         // Parse the JSON string to an array
-        var songsArray = JSON.parse('{{ songs|safe }}');
+        var songsArray = JSON.parse(`{{ songs|safe }}`);
         // Store the songs array in localStorage
         localStorage.setItem('songs', JSON.stringify(songsArray));
         </script>

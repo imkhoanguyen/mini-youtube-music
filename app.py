@@ -3,13 +3,21 @@ from googleapiclient.discovery import build
 from pytube import YouTube
 import json
 from concurrent.futures import ThreadPoolExecutor
+
 app = Flask(__name__)
 
-# Thay đổi 'YOUR_API_KEY' bằng API key của bạn
-API_KEY = 'AIzaSyDdyejQ0N6LkJ0YIFpBmpzQXwV7x1HYlAw'
+API_KEYS = ['AIzaSyDdyejQ0N6LkJ0YIFpBmpzQXwV7x1HYlAw',
+            'AIzaSyCUDaCZJRNk9MeQh3XEOW2iP-QlS-Ku6vk',
+            'AIzaSyCmhpDQnXw6O8sR1uqcCsq4E94Okntk8ig']
 
-# Khởi tạo YouTube API
-youtube = build('youtube', 'v3', developerKey=API_KEY)
+def initYoutubeAPI():
+    for api_key in API_KEYS:
+        youtube = build('youtube', 'v3', developerKey=api_key)
+        if youtube:
+            return youtube
+    return None
+
+youtube = initYoutubeAPI()
 
 class Song:
     def __init__(self, id, title, artist, thumbnail, songUrl, audioUrl):
@@ -42,6 +50,14 @@ def getAudioUrl(video_id):
 def index():
     return render_template('index.html')
 
+@app.route('/download', methods=['POST'])
+def download():
+    songUrl = request.form['txtSongUrl']
+    yt = YouTube(songUrl)
+    t = yt.streams.filter(only_audio=True)
+    t[0].download()
+    return render_template("index.html")
+
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     if request.method == 'POST':
@@ -50,7 +66,7 @@ def search():
             part='snippet',
             type='video',
             videoCategoryId='10',  
-            maxResults=9
+            maxResults=3
         ).execute()
 
         songs = []
