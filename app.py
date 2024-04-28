@@ -60,6 +60,19 @@ def download():
         return jsonify({'message': 'Download Audio Success!'})
     except Exception as e:
         return jsonify({'error': 'Download Audio Fail!'})
+    
+@app.route('/downloadAll', methods=['POST'])
+def downloadAll():
+    data = request.json
+    songUrls = data.get('songUrls', []) 
+    try:
+        for songUrl in songUrls:
+            yt = YouTube(songUrl)
+            t = yt.streams.filter(only_audio=True)
+            t[0].download()
+        return jsonify({'message': 'Download Audio Success!'})
+    except Exception as e:
+        return jsonify({'error': 'Download Audio Fail!'})
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():

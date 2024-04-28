@@ -60,6 +60,7 @@
         </div>
       </form>
       <article class="mt-5">
+        <div class="con-btn-download"></div>
         <div class="row row-cols-3" id="songsList">
           
         </div>
@@ -364,11 +365,35 @@
       // dowload 1 file
       $(document).ready(function() {
           $("#download-btn").click(function() {
-              const songUrl = $("#txtSongUrl").val(); 
+            toastr.info("The download is starting. Please wait a moment");
+            const songUrl = $("#txtSongUrl").val(); 
               $.ajax({
                   type: "POST",
                   url: "/download",
                   data: { txtSongUrl: songUrl }, 
+                  success: function(response) {
+                      if ('message' in response) {
+                        toastr.success(response.message);
+                      } else if ('error' in response) {
+                        toastr.error(response.message);
+                      }
+                  }
+              });
+          });
+      });
+
+      // dowload all file
+      $(document).ready(function() {
+          $("#download-all-btn").click(function() {
+            toastr.info("The download is starting. Please wait a moment");
+            const songs = JSON.parse(localStorage.getItem('songs'));
+            const songUrls = songs.map(song => song.songUrl);
+            console.log(songUrls);
+              $.ajax({
+                  type: "POST",
+                  url: "/downloadAll",
+                  contentType: "application/json",
+                  data: JSON.stringify({ songUrls: songUrls }), 
                   success: function(response) {
                       if ('message' in response) {
                         toastr.success(response.message);
@@ -483,6 +508,19 @@
       displayHtml = "";
       var songsArray = JSON.parse(localStorage.getItem('songs'));
       if (songsArray) {
+        if(songsArray.length > 0) {
+          displayBtnDownload = `
+            <h2 class="text-center">Search results<h2>
+            <div class="row mb-3">
+              <div class="col-9"></div>
+              <div class="col-3 text-end">
+                <button class="btn btn-primary" id="download-all-btn">
+                  Download All
+                </button>
+              </div>  
+            </div>
+          `
+        }
         for (var i = 0; i < songsArray.length; i++) {
           displayHtml += `
           <div class="col mb-4">
@@ -502,6 +540,7 @@
           `;
         }
         document.getElementById('songsList').innerHTML = displayHtml;
+        document.querySelector('.con-btn-download').innerHTML = displayBtnDownload;
       } 
 
       let isRepeat = false;
