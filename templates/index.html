@@ -247,7 +247,6 @@
     
     {% if songs %}
         <script>
-          localStorage.setItem('songs', JSON.stringify([]));
           // Parse the JSON string to an array
           var songsArray = JSON.parse(`{{ songs|safe }}`);
           // Store the songs array in localStorage

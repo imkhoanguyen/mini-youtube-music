@@ -1,4 +1,5 @@
 // init
+localStorage.setItem('songs', JSON.stringify([]));
 const timeline = document.querySelector(".timeline");
 const currentTimeSpan = document.getElementById("current-time");
 const totalTimeSpan = document.getElementById("total-time");
