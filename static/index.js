@@ -250,46 +250,6 @@ volumeRange.addEventListener("input", () => {
     audio.volume = volumeRange.value;
 });
 
-// load songs
-displayHtml = "";
-var songsArray = JSON.parse(localStorage.getItem('songs'));
-if (songsArray) {
-  if(songsArray.length > 0) {
-    displayBtnDownload = `
-      <h2 class="text-center">Search results<h2>
-      <div class="row mb-3">
-        <div class="col-9"></div>
-        <div class="col-3 text-end">
-          <button class="btn btn-primary" id="download-all-btn">
-            Download All
-          </button>
-        </div>  
-      </div>
-    `
-  }
-  for (var i = 0; i < songsArray.length; i++) {
-    displayHtml += `
-    <div class="col mb-4">
-      <div
-        class="mb-2 song-container"
-        onclick="playSong('${i}')">
-        <img
-          src="${songsArray[i].thumbnail}"
-          width="100%"
-          alt="${songsArray[i].title}"
-          class="rounded-3"
-        />
-      </div>
-      <input type="hidden" name="songId" value="${songsArray[i].id}" />
-      <p>${songsArray[i].title}</p>
-    </div>
-    `;
-  }
-  document.getElementById('songsList').innerHTML = displayHtml;
-  document.querySelector('.con-btn-download').innerHTML = displayBtnDownload;
-} 
-
-
 // 
 let isRepeat = false;
 
