@@ -4,7 +4,7 @@ from pytube import YouTube
 import json
 import re
 from concurrent.futures import ThreadPoolExecutor
-
+import os
 app = Flask(__name__)
 
 @app.route('/')
@@ -57,7 +57,10 @@ def download():
     try:
         yt = YouTube(songUrl)
         t = yt.streams.filter(only_audio=True)
-        t[0].download()
+        t[0].download(output_path=os.path.expanduser('~/Desktop'))
+        filename = t[0].default_filename
+        newFileName = os.path.splitext(filename)[0] + ".mp3"
+        os.rename(os.path.join(os.path.expanduser('~/Desktop'), filename), os.path.join(os.path.expanduser('~/Desktop'), newFileName))
         return jsonify({'message': 'Download Audio Success!'})
     except Exception as e:
         return jsonify({'error': 'Download Audio Fail!'})
@@ -70,7 +73,10 @@ def downloadAll():
         for songUrl in songUrls:
             yt = YouTube(songUrl)
             t = yt.streams.filter(only_audio=True)
-            t[0].download()
+            t[0].download(output_path=os.path.expanduser('~/Desktop'))
+            filename = t[0].default_filename
+            newFileName = os.path.splitext(filename)[0] + ".mp3"
+            os.rename(os.path.join(os.path.expanduser('~/Desktop'), filename), os.path.join(os.path.expanduser('~/Desktop'), newFileName))
         return jsonify({'message': 'Download Audio Success!'})
     except Exception as e:
         return jsonify({'error': 'Download Audio Fail!'})
