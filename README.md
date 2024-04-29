@@ -24,10 +24,10 @@ $ Open a web browser to http:127.0.0.1:5000 to access the application.
 
 ## 📝 Usage 
 
-1. Enter a valid YouTube video URL in the input field.
-2. Select the desired format (mp4 or mp3)
-3. Click the "Download" button and wait for the video to downlaod.
-4. The file will be downloaded to your default download location.
+1. Enter a Youtube video URL, keyword song, Youtube Playlist URL.
+2. Select the song you want to Play.
+3. Click the "Download" and "Download All" button and wait for the audio to downlaod.
+4. The file will be downloaded to your Desktop.
 
 
 
