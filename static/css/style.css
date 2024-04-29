@@ -118,3 +118,50 @@ svg, .timeline, .song-container img,.volume-range{
     background: none;
     transition: none;
   }
+
+/* reponsive */
+
+@media only screen and (max-width: 600px) {
+    .music-player {
+        grid-template-columns: repeat(1,1fr);
+    }
+    .music-player__info {
+        display: block;
+    }
+    .img-container img {
+        display: none;
+    }
+    .info-container {
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    #song-channel {
+        display: none;
+    }
+
+    .music-player__other {
+        justify-content: center;
+    }
+
+    #songsList {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #songsList div {
+        width: 100%;
+    }
+
+    #download-all-btn {
+        width: 125px;
+    }
+
+    .reset-offset-1 {
+        margin-left: 0;
+    }
+
+    .w-80 {
+        width: 80%;
+    }
+}
