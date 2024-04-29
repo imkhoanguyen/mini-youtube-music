@@ -26,7 +26,7 @@ $ Open a web browser to http:127.0.0.1:5000 to access the application.
 
 1. Enter a Youtube video URL, keyword song, Youtube Playlist URL.
 2. Select the song you want to Play.
-3. Click the "Download" and "Download All" button and wait for the audio to downlaod.
+3. Click the icon "Download" and "Download All" button and wait for the audio to downlaod.
 4. The file will be downloaded to your Desktop.
 
 
