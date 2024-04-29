@@ -117,17 +117,17 @@ const volumnIcon = `<svg
 // dowload 1 file
 $(document).ready(function() {
     $("#download-btn").click(function() {
-        toastr.info("The download is starting. Please wait a moment");
         const songUrl = $("#txtSongUrl").val(); 
         $.ajax({
             type: "POST",
             url: "/download",
             data: { txtSongUrl: songUrl }, 
             success: function(response) {
+                console.log(response)
                 if ('message' in response) {
                     toastr.success(response.message);
                 } else if ('error' in response) {
-                    toastr.error(response.message);
+                    toastr.error(response.error);
                 }
             }
         });
@@ -150,7 +150,7 @@ $(document).ready(function() {
                 if ('message' in response) {
                     toastr.success(response.message);
                 } else if ('error' in response) {
-                    toastr.error(response.message);
+                    toastr.error(response.error);
                 }
             }
         });

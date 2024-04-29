@@ -59,7 +59,15 @@ def download():
         t = yt.streams.filter(only_audio=True)
         t[0].download(output_path=os.path.expanduser('~/Desktop'))
         filename = t[0].default_filename
-        newFileName = os.path.splitext(filename)[0] + ".mp3"
+        baseName, _ = os.path.splitext(filename)
+        newFileName = baseName + ".mp3"
+        
+        # Check if the new filename already exists
+        count = 1
+        while os.path.exists(os.path.join(os.path.expanduser('~/Desktop'), newFileName)):
+            newFileName = f"{baseName}_{count}.mp3"
+            count += 1
+
         os.rename(os.path.join(os.path.expanduser('~/Desktop'), filename), os.path.join(os.path.expanduser('~/Desktop'), newFileName))
         return jsonify({'message': 'Download Audio Success!'})
     except Exception as e:
@@ -75,7 +83,15 @@ def downloadAll():
             t = yt.streams.filter(only_audio=True)
             t[0].download(output_path=os.path.expanduser('~/Desktop'))
             filename = t[0].default_filename
-            newFileName = os.path.splitext(filename)[0] + ".mp3"
+            baseName, _ = os.path.splitext(filename)
+            newFileName = baseName + ".mp3"
+            
+            # Check if the new filename already exists
+            count = 1
+            while os.path.exists(os.path.join(os.path.expanduser('~/Desktop'), newFileName)):
+                newFileName = f"{baseName}_{count}.mp3"
+                count += 1
+
             os.rename(os.path.join(os.path.expanduser('~/Desktop'), filename), os.path.join(os.path.expanduser('~/Desktop'), newFileName))
         return jsonify({'message': 'Download Audio Success!'})
     except Exception as e:
