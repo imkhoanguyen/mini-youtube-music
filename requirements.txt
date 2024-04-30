@@ -30,6 +30,7 @@ pyasn1==0.5.1
 pyasn1-modules==0.3.0
 PyAudio==0.2.14
 pydub==0.25.1
+pygame==2.5.2
 pyparsing==3.1.2
 python-engineio==4.9.0
 python-socketio==5.11.1
