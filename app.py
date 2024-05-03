@@ -25,21 +25,12 @@ def initYoutubeAPI():
 youtube = initYoutubeAPI()
 
 class Song:
-    def __init__(self, id, title, artist, thumbnail, songUrl, audioUrl):
+    def __init__(self, id, title, artist, thumbnail, songUrl):
         self.id = id
         self.title = title
         self.artist = artist
         self.thumbnail = thumbnail
         self.songUrl = songUrl
-        self.audioUrl = audioUrl
-
-def getInfoSong(id, audio_url):
-    request = youtube.videos().list(part='snippet', id=id).execute()
-    songResponse = request['items'][0]['snippet']
-    thumbnail_url = songResponse['thumbnails']['medium']['url']
-    songUrl = f'https://www.youtube.com/watch?v={id}'
-    songInfo = Song(id, songResponse['title'], songResponse['channelTitle'], thumbnail_url, songUrl, audio_url)
-    return songInfo
 
 def getAudioUrl(video_id):
     try:
@@ -97,81 +88,78 @@ def downloadAll():
     except Exception as e:
         return jsonify({'error': 'Download Audio Fail!'})
 
+def searchWithSongName(query):
+    songs = []
+    search_response = youtube.search().list(
+                    q=query,
+                    part='snippet',
+                    type='video',
+                    videoCategoryId='10',  
+                    maxResults=9
+                ).execute()
+
+    for search_result in search_response.get('items', []):
+        video_id = search_result['id']['videoId']
+        videoUrl = f"https://www.youtube.com/watch?v={video_id}"
+        title = search_result['snippet']['title']
+        artist = search_result['snippet'].get('channelTitle', 'Unknown')
+        thumbnail = search_result['snippet']['thumbnails']['medium']['url']
+        song = Song(video_id, title, artist, thumbnail, videoUrl)
+        songs.append(song)
+    
+    return json.dumps([song.__dict__ for song in songs])
+
+def searchWithPlaylistUrl(query, playlistId):
+    songs = []
+    playlist_response = youtube.playlistItems().list(
+        playlistId=playlistId,
+        part='snippet',
+        maxResults=50,
+    ).execute()
+
+    for search_result in playlist_response.get('items', []):
+        videoId = search_result['snippet']['resourceId']['videoId']
+        videoUrl = f'https://www.youtube.com/watch?v={videoId}'
+        title = search_result['snippet']['title']
+        artist = search_result['snippet']['channelTitle']
+        thum = search_result['snippet']['thumbnails']['medium']['url']
+        song = Song(videoId, title, artist, thum, videoUrl)
+        songs.append(song)
+
+    return json.dumps([song.__dict__ for song in songs])
+
+def searchWithVideoUrl(query, videoId):
+    search_result = youtube.videos().list(
+        part='snippet',
+        id=videoId
+    ).execute()
+    if len(search_result['items']) > 0:
+        videoInfo = search_result['items'][0]['snippet']
+        title = videoInfo['title']
+        thum = videoInfo['thumbnails']['medium']['url']
+        artist = videoInfo['channelTitle']
+        videoUrl = f'https://www.youtube.com/watch?v={videoId}'
+        song = Song(videoId,title,artist,thum,videoUrl)
+    
+    return json.dumps([song.__dict__])
+
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     if request.method == 'POST':
         query = request.form['query']
-        youtube_video_match = re.match(r'^https?://(?:www\.)?youtube\.com/watch\?v=([^\s]+)', query)
-        youtube_playlist_match = re.match(r'^https?://(?:www\.)?youtube\.com/playlist\?list=([^\s]+)', query)
+        youtube_video_match = re.match(r'^https?://(?:www\.)?youtube\.com/watch\?v=([^\s&]+)', query)
         youtube_video_in_playlist = re.search(r'list=([^\s&]+)', query)
         
         if youtube_video_in_playlist:
-            playlist_id = youtube_video_in_playlist.group(1)
-            playlist_response = youtube.playlistItems().list(
-                playlistId=playlist_id,
-                part='contentDetails',
-                maxResults=50,
-            ).execute()
-            videoIds = [item['contentDetails']['videoId'] for item in playlist_response.get('items', [])]
-
-            songs = []
-            with ThreadPoolExecutor() as executor:
-                audioUrls = executor.map(getAudioUrl, videoIds)
-
-            for video_id, audio_url in zip(videoIds, audioUrls):
-                song = getInfoSong(video_id, audio_url)
-                songs.append(song)
-
-            songs_json = json.dumps([song.__dict__ for song in songs])
-            return render_template('index.html', songs=songs_json)
-        elif youtube_playlist_match:
-            playlist_id = youtube_playlist_match.group(1)
-            playlist_response = youtube.playlistItems().list(
-                playlistId=playlist_id,
-                part='contentDetails',
-                maxResults=50,
-            ).execute()
-            videoIds = [item['contentDetails']['videoId'] for item in playlist_response.get('items', [])]
-
-            songs = []
-            with ThreadPoolExecutor() as executor:
-                audioUrls = executor.map(getAudioUrl, videoIds)
-
-            for video_id, audio_url in zip(videoIds, audioUrls):
-                song = getInfoSong(video_id, audio_url)
-                songs.append(song)
-
-            songs_json = json.dumps([song.__dict__ for song in songs])
+            playlistId = youtube_video_in_playlist.group(1)
+            songs_json = searchWithPlaylistUrl(query, playlistId)
             return render_template('index.html', songs=songs_json)
         elif youtube_video_match:
-            video_id = youtube_video_match.group(1)
-            audio_url = getAudioUrl(video_id)
-            song = getInfoSong(video_id, audio_url)
-            songs_json = json.dumps([song.__dict__])
+            videoId = youtube_video_match.group(1)
+            songs_json = searchWithVideoUrl(query, videoId)
             return render_template('index.html', songs=songs_json)
         else:
-            search_response = youtube.search().list(
-                q=query,
-                part='snippet',
-                type='video',
-                videoCategoryId='10',  
-                maxResults=9
-            ).execute()
-
-            songs = []
-            videoIds = []
-            for search_result in search_response.get('items', []):
-                videoId = search_result['id']['videoId'] 
-                videoIds.append(videoId)
-
-            with ThreadPoolExecutor() as executor:
-                audioUrls = executor.map(getAudioUrl, videoIds)
-
-            for video_id, audio_url in zip(videoIds, audioUrls):
-                song = getInfoSong(video_id, audio_url)
-                songs.append(song)
-
-            songs_json = json.dumps([song.__dict__ for song in songs])
+            songs_json = searchWithSongName(query)
             return render_template('index.html', songs=songs_json)
 
 if __name__ == '__main__':
