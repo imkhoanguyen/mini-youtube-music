@@ -184,10 +184,37 @@ soundButton.addEventListener('click', toggleSound);
 let indexSong = 0;
 
 function playSong(index) {
-    
     indexSong = index;
+    var song = songsArray[index];
+    if (song.audioUrl == "") {
+        $(document).ready(function() {
+            $.ajax({
+                type: "POST",
+                url: "/getAudioUrl",
+                contentType: "application/json",
+                data: JSON.stringify({ videoId: song.id }), 
+                success: function(response) {
+                    console.log(response);
+                    if (response.audioUrl) {
+                        song.audioUrl = response.audioUrl;
+                        playAudio(song);
+                    } else {
+                        console.error("Audio URL not found.");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching audio URL:", error);
+                }
+            });
+        });
+        
+    } else {
+        playAudio(song);
+    }
 
-    song = songsArray[index];
+}
+
+function playAudio(song) {
     document.getElementById("audio_player").src = song.audioUrl;
     document.getElementById("audio_player").play();
     document.getElementById("song-title").textContent = song.title;

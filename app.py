@@ -25,22 +25,26 @@ def initYoutubeAPI():
 youtube = initYoutubeAPI()
 
 class Song:
-    def __init__(self, id, title, artist, thumbnail, songUrl):
+    def __init__(self, id, title, artist, thumbnail, songUrl, audioUrl):
         self.id = id
         self.title = title
         self.artist = artist
         self.thumbnail = thumbnail
         self.songUrl = songUrl
+        self.audioUrl = audioUrl
 
-def getAudioUrl(video_id):
+@app.route('/getAudioUrl', methods=['POST'])
+def getAudioUrl():
     try:
+        data_received = request.json
+        video_id = data_received.get('videoId', None)
         video = YouTube(f'https://www.youtube.com/watch?v={video_id}')
         best_audio = video.streams.filter(only_audio=True).first()
         audio_url = best_audio.url
-        return audio_url
+        return jsonify({'audioUrl': audio_url})
     except Exception as e:
         print(f"Error fetching audio URL for video {video_id}: {e}")
-        return None
+        return jsonify({'audioUrl': f'{audio_url}'})
 
 @app.route('/download', methods=['POST'])
 def download():
@@ -104,7 +108,7 @@ def searchWithSongName(query):
         title = search_result['snippet']['title']
         artist = search_result['snippet'].get('channelTitle', 'Unknown')
         thumbnail = search_result['snippet']['thumbnails']['medium']['url']
-        song = Song(video_id, title, artist, thumbnail, videoUrl)
+        song = Song(video_id, title, artist, thumbnail, videoUrl, "")
         songs.append(song)
     
     return json.dumps([song.__dict__ for song in songs])
@@ -123,7 +127,7 @@ def searchWithPlaylistUrl(query, playlistId):
         title = search_result['snippet']['title']
         artist = search_result['snippet']['channelTitle']
         thum = search_result['snippet']['thumbnails']['medium']['url']
-        song = Song(videoId, title, artist, thum, videoUrl)
+        song = Song(videoId, title, artist, thum, videoUrl, "")
         songs.append(song)
 
     return json.dumps([song.__dict__ for song in songs])
@@ -139,7 +143,7 @@ def searchWithVideoUrl(query, videoId):
         thum = videoInfo['thumbnails']['medium']['url']
         artist = videoInfo['channelTitle']
         videoUrl = f'https://www.youtube.com/watch?v={videoId}'
-        song = Song(videoId,title,artist,thum,videoUrl)
+        song = Song(videoId,title,artist,thum,videoUrl, "")
     
     return json.dumps([song.__dict__])
 
