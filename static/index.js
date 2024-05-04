@@ -196,8 +196,13 @@ function playSong(index) {
                 success: function(response) {
                     console.log(response);
                     if (response.audioUrl) {
+
                         song.audioUrl = response.audioUrl;
                         playAudio(song);
+                        // Cập nhật lại giá trị trong localStorage
+                        var storedSongs = JSON.parse(localStorage.getItem('songs'));
+                        storedSongs[index].audioUrl = response.audioUrl;
+                        localStorage.setItem('songs', JSON.stringify(storedSongs));
                     } else {
                         console.error("Audio URL not found.");
                     }
