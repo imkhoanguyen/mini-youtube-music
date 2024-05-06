@@ -15,66 +15,43 @@
 ## ⚙️ Installation 
 
 ```bash
-$ git clone https://github.com/imkhoanguyen/mini-youtube-audio.git
-$ cd mini-youtube-audio
-$ pip install -r requirements.txt
-$ python app.py
-$ Open a web browser to http:127.0.0.1:5000 to access the application.
+Follow these steps to set up and run the YouTube Video Downloader:
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/imkhoanguyen/mini-youtube-music.git
+2. Navigate to the project directory:
+
+    ```bash
+    cd mini-youtube-music
+3. Create a virtual environment
+    ```bash
+    python3 -m venv env
+4. Activate the virtual environment:
+    - On Windows:
+      ```bash
+      env\Scripts\activate
+    - On macOS and Linux:
+      ```bash
+      source env/bin/activate
+5. Install required dependencies:
+    ```bash
+    pip install -r requirements.txt
+6. Run the Flask application:
+    ``bash
+    flask run
+7. Open a web browser to `http:127.0.0.1:5000` to access the application.
 ```
 
 ## 📝 Usage 
 
-1. Enter a Youtube video URL, keyword song, Youtube Playlist URL.
+1. Enter a Youtube video URL, song name, Youtube Playlist URL.
 2. Select the song you want to Play.
 3. Click the icon "Download" and "Download All" button and wait for the audio to downlaod.
 4. The file will be downloaded to your Desktop.
 
-```bash
-{
-  "kind": "youtube#searchListResponse",
-  "etag": "QChZWiObheg343U7hzTgY9J_nPI",
-  "nextPageToken": "CAkQAA",
-  "regionCode": "VN",
-  "pageInfo": {
-    "totalResults": 697129,
-    "resultsPerPage": 9
-  },
-  "items": [
-    {
-      "kind": "youtube#searchResult",
-      "etag": "bVohMEbLbB0XefXJ6kUuuBOhxLA",
-      "id": {
-        "kind": "youtube#video",
-        "videoId": "zoEtcR5EW08"
-      },
-      "snippet": {
-        "publishedAt": "2024-03-07T17:00:50Z",
-        "channelId": "UClyA28-01x4z60eWQ2kiNbA",
-        "title": "SƠN TÙNG M-TP | CHÚNG TA CỦA TƯƠNG LAI | OFFICIAL MUSIC VIDEO",
-        "description": "Hãy thưởng thức ca khúc CHÚNG TA CỦA TƯƠNG LAI ngay tại đây: https://MTP.bfan.link/chung-ta-cua-tuong-lai ...",
-        "thumbnails": {
-          "default": {
-            "url": "https://i.ytimg.com/vi/zoEtcR5EW08/default.jpg",
-            "width": 120,
-            "height": 90
-          },
-          "medium": {
-            "url": "https://i.ytimg.com/vi/zoEtcR5EW08/mqdefault.jpg",
-            "width": 320,
-            "height": 180
-          },
-          "high": {
-            "url": "https://i.ytimg.com/vi/zoEtcR5EW08/hqdefault.jpg",
-            "width": 480,
-            "height": 360
-          }
-        },
-        "channelTitle": "Sơn Tùng M-TP Official",
-        "liveBroadcastContent": "none",
-        "publishTime": "2024-03-07T17:00:50Z"
-      }
-    },
-  ]
-}
-```
+## License
+
+MIT © [imkhoanguyen](https://github.com/imkhoanguyen/mini-youtube-music)
 
