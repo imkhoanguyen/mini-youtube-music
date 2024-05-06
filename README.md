@@ -14,9 +14,6 @@
 
 ## ⚙️ Installation 
 
-```bash
-Follow these steps to set up and run the YouTube Video Downloader:
-
 1. Clone the repository:
 
    ```bash
@@ -40,9 +37,9 @@ Follow these steps to set up and run the YouTube Video Downloader:
     pip install -r requirements.txt
 6. Run the Flask application:
     ``bash
-    flask run
+    python app.py
 7. Open a web browser to `http:127.0.0.1:5000` to access the application.
-```
+
 
 ## 📝 Usage 
 
