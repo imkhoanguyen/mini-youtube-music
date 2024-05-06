@@ -15,7 +15,7 @@
 ## ⚙️ Installation 
 
 ```bash
-$ git clone [https://github.com/imkhoanguyen/mini-youtube-music.git](https://github.com/imkhoanguyen/mini-youtube-audio.git)
+$ git clone https://github.com/imkhoanguyen/mini-youtube-audio.git
 $ cd mini-youtube-audio
 $ pip install -r requirements.txt
 $ python app.py
