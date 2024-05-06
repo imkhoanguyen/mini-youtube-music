@@ -15,8 +15,8 @@
 ## ⚙️ Installation 
 
 ```bash
-$ git clone https://github.com/imkhoanguyen/mini-youtube-music.git
-$ cd mini-youtube-music
+$ git clone [https://github.com/imkhoanguyen/mini-youtube-music.git](https://github.com/imkhoanguyen/mini-youtube-audio.git)
+$ cd mini-youtube-audio
 $ pip install -r requirements.txt
 $ python app.py
 $ Open a web browser to http:127.0.0.1:5000 to access the application.
